@@ -23,7 +23,7 @@ To install the plugin via Composer, follow these steps:
      "repositories": [
          {
              "type": "vcs",
-             "url": "https://github.com/xwp/ga4-extensions"
+             "url": "https://github.com/xwp/stn-video-performance"
          }
      ]
      ```
@@ -32,7 +32,7 @@ To install the plugin via Composer, follow these steps:
    - Run the following command in your terminal:
 
      ```bash
-     composer require xwp/ga4-extensions
+     composer require xwp/stn-video-performance
      ```
 
 3. **Activate the Plugin:**
