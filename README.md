@@ -127,7 +127,7 @@ This plugin integrates seamlessly with the STN Video plugin:
 
 - WordPress 6.8 or higher
 - STN Video plugin must be installed and activated
-- PHP 8.2 or higher
+- PHP 8.1 or higher
 - STN Video Meta plugin (optional, required for video thumbnail placeholders)
 
 ## Changelog

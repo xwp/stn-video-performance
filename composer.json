@@ -3,7 +3,7 @@
     "description": "Web vitals improvements for STN Videos.",
     "type": "wordpress-plugin",
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.1",
         "composer/installers": "~1.0"
     },
     "license": "GPL-2.0-or-later",
