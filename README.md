@@ -11,9 +11,49 @@ A lightweight WordPress plugin that extends the sendtonews plugin to provide per
 
 ## Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/stn-video-performance` directory
-2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Navigate to Settings > STN Video to configure the plugin
+### Using Composer
+
+To install the plugin via Composer, follow these steps:
+
+1. **Add the Repository:**
+   - Open your project's `composer.json` file.
+   - Add the following under the `repositories` section:
+
+     ```json
+     "repositories": [
+         {
+             "type": "vcs",
+             "url": "https://github.com/xwp/ga4-extensions"
+         }
+     ]
+     ```
+
+2. **Require the Plugin:**
+   - Run the following command in your terminal:
+
+     ```bash
+     composer require xwp/ga4-extensions
+     ```
+
+3. **Activate the Plugin:**
+   - Once installed, activate the plugin through the 'Plugins' menu in WordPress.
+
+4. **Configure the Plugin**
+  - Navigate to Settings > STN Video to configure the plugin
+
+### Manual Installation
+
+1. **Download the Plugin:**
+  - Download the `stn-video-performance` plugin folder.
+
+2. **Upload the Plugin:**
+  - Add the `stn-video-performance` folder to the `/wp-content/plugins/` directory of your WordPress installation.
+
+3. **Activate the Plugin:**
+  - Activate the plugin through the 'Plugins' menu in WordPress.
+
+4. **Configure the Plugin**
+  - Navigate to Settings > STN Video to configure the plugin
 
 ## Usage
 
