@@ -303,7 +303,7 @@ final class Plugin {
 			';
 
 		// Add the video thumbnail as background if available for better user experience.
-		if ( ! empty( $video_thumbnail ) ) {
+		if ( ! empty( $video_thumbnail ) && isset( $attr['key'] ) ) {
 			$inline_styles .= '
 			.s2nPlayer.k-' . esc_attr( $attr['key'] ) . ' {
 				--background-image: url( "' . esc_attr( $video_thumbnail ) . '" );
