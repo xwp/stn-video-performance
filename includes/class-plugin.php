@@ -19,14 +19,11 @@ final class Plugin {
 	 * Constructor - Initialize hooks.
 	 */
 	public function __construct() {
-		// Add our performance settings section to the STN Video settings page
-		add_action( 'sendtonews_settings_enqueue', [ $this, 'render_performance_settings_section' ] );
+		// Add our performance settings section to the Video Settings page.
+		add_action( 'stn_video_settings_sections', [ $this, 'render_performance_settings_section' ] );
 
 		// Handle our settings save
 		add_action( 'admin_init', [ $this, 'handle_settings_save' ] );
-
-		// Remove the meta box after it's registered if setting is enabled
-		add_action( 'add_meta_boxes', [ $this, 'maybe_remove_featured_video_metabox' ], 999 );
 
 		// Delay video script loading if configured - hook into shortcode output
 		add_filter( 'do_shortcode_tag', [ $this, 'delay_video_script_loading' ], 10, 4 );
@@ -42,7 +39,7 @@ final class Plugin {
 	 * @return array Modified plugin action links.
 	 */
 	public function add_plugin_action_links( $links ) {
-		$settings_link = '<a href="' . admin_url( 'options-general.php?page=sendtonews-settings' ) . '">' . __( 'Settings', 'stn-video-performance' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=video-settings' ) ) . '">' . __( 'Settings', 'stn-video-performance' ) . '</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -63,7 +60,6 @@ final class Plugin {
 			}
 		</style>
 		<div class="wrap stn-performance-settings">
-			<h2><?php esc_html_e( 'STN Video Settings', 'stn-video-performance' ); ?></h2>
 			<h2><?php esc_html_e( 'Performance Options', 'stn-video-performance' ); ?></h2>
 
 			<?php if ( $notice ) : ?>
@@ -77,29 +73,6 @@ final class Plugin {
 
 				<table class="form-table" role="presentation">
 					<tbody>
-						<tr>
-							<th scope="row">
-								<label for="hide_featured_video_metabox">
-									<?php esc_html_e( 'Featured Video Meta Box', 'stn-video-performance' ); ?>
-								</label>
-							</th>
-							<td>
-								<fieldset>
-									<label for="hide_featured_video_metabox">
-										<input type="checkbox"
-												id="hide_featured_video_metabox"
-												name="hide_featured_video_metabox"
-												value="1"
-												<?php checked( ! empty( $settings['hide_featured_video_metabox'] ) ); ?> />
-										<?php esc_html_e( 'Hide Featured Video Player meta box from post and page edit screens', 'stn-video-performance' ); ?>
-									</label>
-									<p class="description">
-										<?php esc_html_e( 'When enabled, the Featured Video Player meta box will not be displayed on post and page edit screens. This improves editor performance by preventing unnecessary script loading.', 'stn-video-performance' ); ?>
-									</p>
-								</fieldset>
-							</td>
-						</tr>
-
 						<tr>
 							<th scope="row">
 								<label for="stn_video_load_delay">
@@ -132,9 +105,9 @@ final class Plugin {
 	 * Handle settings save.
 	 */
 	public function handle_settings_save() {
-		// Only process on STN Video settings page.
+		// Only process on Video Settings page.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking page context only, nonce verified below.
-		if ( ! isset( $_GET['page'] ) || 'sendtonews-settings' !== $_GET['page'] ) {
+		if ( ! isset( $_GET['page'] ) || 'video-settings' !== $_GET['page'] ) {
 			return;
 		}
 
@@ -159,8 +132,7 @@ final class Plugin {
 		update_option(
 			self::OPTION_NAME,
 			[
-				'hide_featured_video_metabox' => isset( $_POST['hide_featured_video_metabox'] ) ? 1 : 0,
-				'stn_video_load_delay'        => $stn_video_load_delay,
+				'stn_video_load_delay' => $stn_video_load_delay,
 			],
 			false // No autoload.
 		);
@@ -169,7 +141,7 @@ final class Plugin {
 		wp_safe_redirect(
 			add_query_arg(
 				[
-					'page'             => 'sendtonews-settings',
+					'page'             => 'video-settings',
 					'stn-perf-updated' => 'true',
 				],
 				admin_url( 'options-general.php' )
@@ -185,34 +157,11 @@ final class Plugin {
 	 */
 	private function get_settings() {
 		$defaults = [
-			'hide_featured_video_metabox' => 0,
-			'stn_video_load_delay'        => 0,
+			'stn_video_load_delay' => 0,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
 		return wp_parse_args( $settings, $defaults );
-	}
-
-	/**
-	 * Remove the Featured Video meta box if the setting is enabled.
-	 *
-	 * This runs after the meta box is registered and removes it from all screens
-	 * where it was registered.
-	 */
-	public function maybe_remove_featured_video_metabox() {
-		$settings = $this->get_settings();
-
-		if ( ! empty( $settings['hide_featured_video_metabox'] ) ) {
-			// Get the same screens that STN Video uses for the meta box.
-			// Start with the same defaults that STN Video uses, then apply the same filter.
-			// This ensures we remove the meta box from all the same places it was added.
-			$screens = apply_filters( 'stnvideo_featured_video_screens', [ 'post', 'page' ] );
-
-			// Remove the meta box from each screen.
-			foreach ( $screens as $screen ) {
-				remove_meta_box( 'stnvideo_featured_video', $screen, 'side' );
-			}
-		}
 	}
 
 	/**
